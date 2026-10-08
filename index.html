@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="web_standard" name="shell-type"/>
+<title>PRESENTASI GAM</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}
+::-webkit-scrollbar{display:none;}
+</style>
+<script src="https://cdn.tailwindcss.com"></script>
+<script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"surface-container":"#1a233a","on-secondary-fixed":"#050711","tertiary-container":"#1a233a","inverse-on-surface":"#050711","on-secondary-container":"#ffffff","secondary-container":"#11182c","surface-container-low":"#11182c","on-background":"#ffffff","on-tertiary":"#050711","primary-container":"#1a233a","on-surface":"#ffffff","error-container":"#7a0016","tertiary-fixed-dim":"#f3ead3","on-primary-fixed-variant":"#050711","surface-tint":"#f3ead3","on-tertiary-container":"#ffffff","inverse-primary":"#1a233a","on-secondary-fixed-variant":"#050711","on-primary-container":"#f3ead3","tertiary":"#f3ead3","secondary-fixed-dim":"#11182c","primary-fixed-dim":"#f3ead3","surface-container-lowest":"#0b1021","on-primary":"#050711","on-secondary":"#ffffff","surface-variant":"#1a233a","surface-container-high":"#222d48","on-surface-variant":"#a3aec8","primary":"#f3ead3","on-tertiary-fixed-variant":"#050711","outline-variant":"#3b4968","on-error":"#ffffff","surface-bright":"#11182c","surface-dim":"#050711","error":"#ffb4ab","secondary-fixed":"#1a233a","outline":"#5f6f92","on-primary-fixed":"#050711","surface-container-highest":"#2d3b5b","secondary":"#1a233a","primary-fixed":"#f3ead3","on-error-container":"#ffdad6","tertiary-fixed":"#f3ead3","inverse-surface":"#e2e2e9","on-tertiary-fixed":"#050711","surface":"#050711","background":"#050711"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-md":"1rem","gutter":"1.5rem","space-xl":"2.5rem","gutter-mobile":"1rem","margin":"2rem","margin-mobile":"1rem","space-sm":"0.5rem","space-xs":"0.25rem","space-lg":"1.5rem"},"fontFamily":{"headline-xl":["Inter"],"label-lg":["Inter"],"body-md":["Inter"],"body-lg":["Inter"],"label-sm":["Inter"],"headline-lg":["Inter"],"body-sm":["Inter"],"headline-xl-mobile":["Inter"],"headline-lg-mobile":["Inter"],"headline-sm":["Inter"],"label-md":["Inter"],"headline-md":["Inter"]},"fontSize":{"headline-xl":["36px",{"lineHeight":"44px","fontWeight":"700"}],"label-lg":["14px",{"lineHeight":"20px","fontWeight":"600"}],"body-md":["14px",{"lineHeight":"22px","fontWeight":"400"}],"body-lg":["16px",{"lineHeight":"26px","fontWeight":"400"}],"label-sm":["11px",{"lineHeight":"14px","fontWeight":"600"}],"headline-lg":["28px",{"lineHeight":"36px","fontWeight":"600"}],"body-sm":["12px",{"lineHeight":"18px","fontWeight":"400"}],"headline-xl-mobile":["28px",{"lineHeight":"36px","fontWeight":"700"}],"headline-lg-mobile":["22px",{"lineHeight":"30px","fontWeight":"600"}],"headline-sm":["16px",{"lineHeight":"24px","fontWeight":"600"}],"label-md":["12px",{"lineHeight":"16px","fontWeight":"500"}],"headline-md":["20px",{"lineHeight":"28px","fontWeight":"600"}]}}}};</script>
+
+<!-- Firebase SDKs -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, getDocs, query, orderBy, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // TODO: Ganti dengan Firebase Config milikmu
+  const firebaseConfig = {
+    apiKey: "AIzaSyD7DlZkw-Cq0I6Rlgpta9px4RnGSJlajhc",
+    authDomain: "presentasi-kuliahku.firebaseapp.com",
+    projectId: "presentasi-kuliahku",
+    storageBucket: "presentasi-kuliahku.firebasestorage.app",
+    messagingSenderId: "305618091828",
+    appId: "1:305618091828:web:41419009f6e00698c42f61",
+    measurementId: "G-GCV0S9BNEK"
+  };
+
+  let app, auth, db;
+  try {
+    app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    db = getFirestore(app);
+  } catch (e) {
+    console.error("Firebase config belum diatur", e);
+  }
+
+  window.firebaseAuth = auth;
+  window.firebaseDb = db;
+  window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+  window.onAuthStateChanged = onAuthStateChanged;
+  window.signOut = signOut;
+  window.collection = collection;
+  window.addDoc = addDoc;
+  window.getDocs = getDocs;
+  window.query = query;
+  window.orderBy = orderBy;
+  window.doc = doc;
+  window.deleteDoc = deleteDoc;
+</script>
+<script defer src="app.js"></script>
+
+</head>
+<body class="bg-background font-body-md text-on-surface">
+<header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/95 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+<div class="h-20 w-full max-w-[1440px] mx-auto px-gutter flex items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md flex-shrink-0">
+<img alt="Logo Presentasi Kuliah" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARYnut9Wh2BZH7awxC7E99kuw914dpa3WGV00r80RbRRHm2RmWdtUGhNgHD5Dn4g6kbyrJzikpRXhV3bJqqmDPsTCM0wdYQ2zcTtRTuWvdpeWovuMJ9Q_uRi8rAMUgjvm8Wu2uapK8Srvlpy9hPDX6MVSRpgMXM4KamAreovxz38dooz_xQw0lb0NBdRsSJ0v3QwgByNOZCUaJSPRM2nXIbUoADOk-P9Fgqh3ad5bd"/>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-primary tracking-tight leading-none">PRESENTASI GAM</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1 leading-none">Repositori Slide &amp; Materi Kuliah</span>
+</div>
+</div>
+<div class="flex-1 max-w-md hidden lg:block">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-on-surface-variant text-[20px] pointer-events-none">search</span>
+<input id="header-search-input" class="w-full h-11 pl-10 pr-16 bg-surface-container-low rounded-xl font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:bg-surface-container transition-colors" placeholder="Cari materi kuliah, topik, atau dosen..." type="text"/>
+<kbd class="absolute right-3 px-1.5 py-0.5 bg-surface-container rounded font-label-sm text-label-sm text-on-surface-variant pointer-events-none">⌘K</kbd>
+</div>
+</div>
+<nav class="hidden xl:flex items-center gap-space-xs" data-active-classes="bg-primary text-on-primary rounded-xl font-label-md shadow-sm">
+<a aria-current="page" class="px-3 py-2 transition-colors bg-primary text-on-primary rounded-xl font-label-md shadow-sm" href="#">Semua Slide</a>
+</nav>
+<div class="flex items-center gap-space-sm flex-shrink-0">
+<button id="btn-login" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-surface-container-low text-on-surface font-label-md text-label-md hover:bg-surface-container-high transition-colors border border-surface-container-highest" type="button" onclick="openModal('admin-login-modal')">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">shield</span>
+<span class="hidden sm:inline">Admin Login</span>
+</button>
+<button id="btn-manage-matkul" class="hidden inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-surface-container-low text-on-surface font-label-md text-label-md hover:bg-surface-container-high transition-colors border border-surface-container-highest" type="button" onclick="openModal('manage-matkul-modal')">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+<span class="hidden sm:inline">Kelola Matkul</span>
+</button>
+<button id="btn-logout" class="hidden inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-surface-container-low text-error font-label-md text-label-md hover:bg-error-container hover:text-error transition-colors border border-surface-container-highest" type="button">
+<span class="material-symbols-outlined text-[18px]">logout</span>
+<span class="hidden sm:inline">Logout</span>
+</button>
+<button id="btn-upload-nav" class="hidden inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary text-on-primary font-label-md text-label-md hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm" type="button" onclick="toggleUploadDrawer()">
+<span class="material-symbols-outlined text-[18px]">cloud_upload</span>
+<span class="hidden sm:inline">Unggah Slide</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
+</div>
+</div>
+</div>
+</header>
+<main class="w-full pt-20 bg-background min-h-[calc(100vh-14rem)]">
+<div class="flex flex-col w-full">
+<div class="relative w-full overflow-hidden">
+<div class="absolute -top-32 -left-20 w-96 h-96 bg-primary-container/10 rounded-full blur-3xl pointer-events-none"></div>
+<div class="absolute top-24 -right-20 w-80 h-80 bg-tertiary-container/10 rounded-full blur-3xl pointer-events-none"></div>
+<div class="w-full max-w-[1440px] mx-auto px-gutter py-space-lg flex flex-col gap-space-lg">
+
+<section class="relative rounded-xl bg-gradient-to-br from-surface-container-lowest via-surface-container-low to-surface-container p-space-lg md:p-space-xl text-white shadow-xl overflow-hidden border border-surface-container-high">
+<div class="absolute right-0 bottom-0 opacity-10 pointer-events-none translate-x-12 translate-y-12">
+<svg class="text-white" fill="none" height="420" viewbox="0 0 200 200" width="420">
+<path d="M20 20H180V180H20z" stroke="currentColor" stroke-dasharray="8 8" stroke-width="4"></path>
+<path d="M40 40H160V160H40z" stroke="currentColor" stroke-width="6"></path>
+<circle cx="100" cy="100" r="50" stroke="currentColor" stroke-width="8"></circle>
+<line stroke="currentColor" stroke-width="4" x1="20" x2="180" y1="20" y2="180"></line>
+</svg>
+</div>
+<div class="relative z-10 flex flex-col gap-space-md max-w-3xl">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-high/50 backdrop-blur-md w-fit border border-surface-container-highest">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-primary tracking-wider uppercase font-semibold">Repositori Sivitas Informatika</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-white tracking-tight leading-tight">
+Pusat Materi &amp; Slide Presentasi Kuliah
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl leading-relaxed">
+Akses, unduh, dan pelajari materi kuliah terlengkap dari berbagai mata kuliah teknik informatika secara terbuka, terstruktur, dan terverifikasi dosen.
+</p>
+<div class="flex flex-wrap items-center gap-3 pt-space-xs">
+<div class="flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-surface-container-high/30 backdrop-blur-md border border-surface-container-highest">
+<span class="material-symbols-outlined text-[18px] text-primary">slideshow</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant leading-none">Koleksi Slide</span>
+<span class="font-label-lg text-label-lg text-white font-bold leading-none mt-1" id="stat-slide">0 Slide Tersedia</span>
+</div>
+</div>
+<!-- Adding back Kurikulum & Sinkronisasi from the image -->
+<div class="flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-surface-container-high/30 backdrop-blur-md border border-surface-container-highest">
+<span class="material-symbols-outlined text-[18px] text-primary">menu_book</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant leading-none">Kurikulum Aktif</span>
+<span class="font-label-lg text-label-lg text-white font-bold leading-none mt-1">5 Mata Kuliah</span>
+</div>
+</div>
+<div class="flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-surface-container-high/30 backdrop-blur-md border border-surface-container-highest">
+<span class="material-symbols-outlined text-[18px] text-primary">sync</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant leading-none">Sinkronisasi</span>
+<span class="font-label-lg text-label-lg text-white font-bold leading-none mt-1">Update: Hari Ini</span>
+</div>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-space-sm pt-2">
+<button id="btn-upload-banner" class="hidden inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-on-primary font-label-lg text-label-lg hover:bg-primary-container hover:text-on-primary-container shadow-md transition-all active:scale-95" onclick="toggleUploadDrawer()">
+<span class="material-symbols-outlined text-[20px]">add_circle</span>
+<span>+ Upload Slide Baru</span>
+</button>
+<a class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface-container-high/50 hover:bg-surface-container-highest backdrop-blur-md text-white font-label-lg text-label-lg transition-colors border border-surface-container-highest" href="#katalog-slide">
+<span class="material-symbols-outlined text-[20px]">explore</span>
+<span>Jelajahi Slide</span>
+</a>
+<!-- Adding Otentikasi Pengajar from the image -->
+<button class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-on-surface-variant hover:text-white hover:bg-surface-container-high/30 font-label-md text-label-md transition-colors" onclick="openModal('admin-login-modal')">
+<span class="material-symbols-outlined text-[18px]">admin_panel_settings</span>
+<span>Otentikasi Pengajar</span>
+</button>
+</div>
+</div>
+</section>
+
+<!-- Upload Panel -->
+<section class="hidden transition-all duration-300" id="upload-panel">
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm">
+<div class="flex items-center justify-between pb-space-sm mb-space-md border-b border-surface-container-high">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-xl bg-tertiary-container flex items-center justify-center text-on-tertiary">
+<span class="material-symbols-outlined text-[20px]">cloud_upload</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-primary">Formulir Pengunggahan Slide Kuliah</h2>
+<p class="font-body-sm text-body-sm text-secondary">Khusus Dosen Pengampu &amp; Asisten Laboratorium Terverifikasi</p>
+</div>
+</div>
+<button class="p-1.5 rounded-lg text-secondary hover:bg-surface-container-low transition-colors" onclick="toggleUploadDrawer()">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<form class="grid grid-cols-1 md:grid-cols-12 gap-space-md" id="upload-form">
+<div class="md:col-span-4 flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface">Mata Kuliah</label>
+<div class="relative">
+<select id="form-matkul" class="w-full h-11 px-3 bg-surface-container-low rounded-xl font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest transition-colors appearance-none pr-8" required>
+<option disabled selected value="">Pilih Mata Kuliah...</option>
+</select>
+<span class="material-symbols-outlined absolute right-2.5 top-3 text-secondary text-[18px] pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="md:col-span-5 flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface">Judul Presentasi &amp; Topik</label>
+<input id="form-judul" class="w-full h-11 px-3.5 bg-surface-container-low rounded-xl font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest transition-colors" placeholder="Contoh: Pertemuan 04 - Graph Traversal &amp; BFS" required type="text"/>
+</div>
+<div class="md:col-span-3 flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface">Pertemuan Ke-</label>
+<input id="form-pertemuan" class="w-full h-11 px-3.5 bg-surface-container-low rounded-xl font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest transition-colors" max="16" min="1" placeholder="1 s/d 16" type="number"/>
+</div>
+<div class="md:col-span-12 flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface">Link Google Drive</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[20px] pointer-events-none">link</span>
+<input id="form-url" class="w-full h-11 pl-11 pr-3.5 bg-surface-container-low rounded-xl font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:bg-surface-container transition-colors" placeholder="Tempelkan link Google Drive di sini..." required="" type="url"/>
+</div>
+</div>
+<div class="md:col-span-12 flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface">Tipe File</label>
+<div class="relative">
+<select id="form-tipe" class="w-full h-11 px-3 bg-surface-container-low rounded-xl font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container transition-colors appearance-none pr-8" required="">
+<option value="PDF">PDF</option>
+<option value="PPTX">PowerPoint (PPT/PPTX)</option>
+<option value="LINK">Link Biasa</option>
+</select>
+<span class="material-symbols-outlined absolute right-2.5 top-3 text-on-surface-variant text-[18px] pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="md:col-span-12 flex items-center justify-end gap-space-sm pt-2">
+<button class="px-4 py-2 rounded-xl bg-surface-container text-secondary font-label-md text-label-md hover:bg-surface-variant transition-colors" onclick="toggleUploadDrawer()" type="button">Batal</button>
+<button id="form-submit" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-on-primary font-label-md text-label-md hover:bg-primary-container shadow-sm transition-colors" type="submit">
+<span class="material-symbols-outlined text-[18px]">publish</span>
+<span>Upload &amp; Publikasikan</span>
+</button>
+</div>
+</form>
+</div>
+</section>
+
+<!-- Filter Section -->
+<section class="flex flex-col gap-space-md" id="katalog-slide">
+<div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-space-sm bg-surface-container-lowest p-space-sm md:p-space-md rounded-xl shadow-sm">
+<div class="relative flex-1 max-w-xl">
+<span class="material-symbols-outlined absolute left-3.5 top-3 text-on-surface-variant text-[20px] pointer-events-none">search</span>
+<input class="w-full h-11 pl-11 pr-20 bg-surface-container-low rounded-xl font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:bg-surface-container transition-colors" id="live-search-input" placeholder="Cari judul materi, topik, atau kata kunci..." type="text"/>
+</div>
+<div class="flex items-center gap-space-sm justify-between lg:justify-end">
+<div class="px-3 py-2 rounded-xl bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span id="card-count-label">0 Slide Ditampilkan</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none" id="category-pills">
+<button class="category-btn active-pill px-4 py-2 rounded-full font-label-md text-label-md bg-primary text-on-primary whitespace-nowrap shadow-sm transition-all" data-cat="all">Semua Mata Kuliah</button>
+</div>
+</section>
+
+<!-- Slides Grid -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter" id="presentations-grid">
+<!-- Injected via JS -->
+</section>
+
+<div class="hidden flex-col items-center justify-center p-space-xl bg-surface-container-lowest rounded-xl text-center" id="no-results-state">
+<span class="material-symbols-outlined text-[48px] text-secondary mb-2">search_off</span>
+<h4 class="font-headline-sm text-headline-sm text-primary">Tidak Ada Materi Ditemukan</h4>
+</div>
+</div>
+</div>
+
+<!-- Admin Login Modal -->
+<div class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" id="manage-matkul-modal">
+<div class="w-full max-w-md bg-surface-container-lowest rounded-xl shadow-2xl p-space-lg flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-2 border-b border-surface-container-high">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-tertiary-container text-white flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">category</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary">Kelola Mata Kuliah</h3>
+</div>
+</div>
+<button class="p-1 rounded-lg text-secondary hover:bg-surface-container-low transition-colors" onclick="closeModal('manage-matkul-modal')">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="flex flex-col gap-2">
+  <div class="flex gap-2">
+    <input id="new-matkul-input" class="flex-1 h-11 pl-3 pr-3.5 bg-surface-container-low rounded-xl font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest transition-colors" placeholder="Nama Mata Kuliah Baru" type="text"/>
+    <button id="btn-add-matkul" class="h-11 px-4 rounded-xl bg-primary text-on-primary font-label-md hover:bg-primary-container transition-all">Tambah</button>
+  </div>
+  <ul id="matkul-list" class="mt-4 flex flex-col gap-2 max-h-60 overflow-y-auto">
+    <!-- List of matkul with delete buttons will go here -->
+  </ul>
+</div>
+</div>
+</div>
+
+<!-- Admin Login Modal -->
+<div class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" id="admin-login-modal">
+<div class="w-full max-w-md bg-surface-container-lowest rounded-xl shadow-2xl p-space-lg flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-2 border-b border-surface-container-high">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-primary-container text-white flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">admin_panel_settings</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary">Login Admin</h3>
+</div>
+</div>
+<button class="p-1 rounded-lg text-secondary hover:bg-surface-container-low transition-colors" onclick="closeModal('admin-login-modal')">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<form id="login-form" class="flex flex-col gap-space-sm">
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-on-surface">Email</label>
+<input id="login-email" class="w-full h-11 pl-3 pr-3.5 bg-surface-container-low rounded-xl font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest transition-colors" placeholder="email@contoh.com" required type="email"/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-on-surface">Kata Sandi</label>
+<input id="login-password" class="w-full h-11 pl-3 pr-3.5 bg-surface-container-low rounded-xl font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest transition-colors" placeholder="••••••••••••" required type="password"/>
+</div>
+<p id="login-error" class="text-error text-sm mt-1"></p>
+<button class="w-full h-11 rounded-xl bg-primary text-on-primary font-label-lg text-label-lg hover:bg-primary-container shadow-md transition-all mt-2" type="submit">
+Masuk
+</button>
+</form>
+</div>
+</div>
+
+<!-- Toast -->
+<div class="fixed bottom-6 right-6 z-50 hidden items-center gap-3 px-4 py-3 rounded-xl bg-on-surface text-surface-container-lowest shadow-xl border-l-4 border-tertiary" id="toast-notification">
+<span class="material-symbols-outlined text-tertiary text-[20px]">check_circle</span>
+<span class="font-body-sm text-body-sm font-medium" id="toast-message">Tindakan berhasil!</span>
+</div>
+
+<script>
+function toggleUploadDrawer() {
+  const panel = document.getElementById('upload-panel');
+  if (panel.classList.contains('hidden')) {
+    panel.classList.remove('hidden');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } else {
+    panel.classList.add('hidden');
+  }
+}
+function openModal(id) {
+  document.getElementById(id).classList.remove('hidden');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.add('hidden');
+}
+function showToast(msg) {
+  const toast = document.getElementById('toast-notification');
+  document.getElementById('toast-message').textContent = msg;
+  toast.classList.remove('hidden');
+  toast.classList.add('flex');
+  setTimeout(() => {
+    toast.classList.add('hidden');
+    toast.classList.remove('flex');
+  }, 3500);
+}
+</script>
+</div>
+</main>
+<footer class="w-full bg-surface-container-low py-space-xl">
+<div class="w-full max-w-[1440px] mx-auto px-gutter text-center text-on-surface-variant font-body-sm">
+© 2024 PRESENTASI GAM.
+</div>
+</footer>
+</body>
+</html>
