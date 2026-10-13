@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const noResultsState = document.getElementById("no-results-state");
     
     const searchInput = document.getElementById("live-search-input");
+    const headerSearchInput = document.getElementById("header-search-input");
     const categoryPillsContainer = document.getElementById("category-pills");
     
     const newMatkulInput = document.getElementById("new-matkul-input");
@@ -34,26 +35,38 @@ document.addEventListener("DOMContentLoaded", () => {
     let allSubjects = [];
     let currentCategory = "all";
     let searchQuery = "";
+    let currentUser = null;
 
     // --- Firebase Auth ---
     window.onAuthStateChanged(window.firebaseAuth, (user) => {
+        currentUser = user;
         if (user) {
             btnLogin.classList.add("hidden");
             btnLogout.classList.remove("hidden");
+            btnLogout.classList.add("inline-flex");
             btnUploadNav.classList.remove("hidden");
-            btnUploadBanner.classList.remove("hidden");
-            btnManageMatkul.classList.remove("hidden");
-            btnUploadBanner.classList.add("inline-flex");
             btnUploadNav.classList.add("inline-flex");
+            if (btnUploadBanner) {
+                btnUploadBanner.classList.remove("hidden");
+                btnUploadBanner.classList.add("inline-flex");
+            }
+            btnManageMatkul.classList.remove("hidden");
             btnManageMatkul.classList.add("inline-flex");
         } else {
             btnLogin.classList.remove("hidden");
             btnLogout.classList.add("hidden");
+            btnLogout.classList.remove("inline-flex");
             btnUploadNav.classList.add("hidden");
-            btnUploadBanner.classList.add("hidden");
+            btnUploadNav.classList.remove("inline-flex");
+            if (btnUploadBanner) {
+                btnUploadBanner.classList.add("hidden");
+                btnUploadBanner.classList.remove("inline-flex");
+            }
             btnManageMatkul.classList.add("hidden");
+            btnManageMatkul.classList.remove("inline-flex");
             document.getElementById("upload-panel").classList.add("hidden");
         }
+        renderGrid();
     });
 
     loginForm.addEventListener("submit", async (e) => {
@@ -102,10 +115,15 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         // Render Category Pills
-        categoryPillsContainer.innerHTML = '<button class="category-btn active-pill px-4 py-2 rounded-full font-label-md text-label-md bg-primary text-on-primary whitespace-nowrap shadow-sm border-transparent transition-all" data-cat="all">Semua Mata Kuliah</button>';
+        categoryPillsContainer.innerHTML = `
+            <button class="category-btn ${currentCategory === 'all' ? 'active-pill bg-parchment text-obsidian-950' : 'bg-obsidian-900 text-slate-300 border border-obsidian-800 hover:border-obsidian-700'} px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all" data-cat="all">
+              Semua Mata Kuliah
+            </button>
+        `;
         allSubjects.forEach(sub => {
+            const isActive = currentCategory === sub.name;
             const btn = document.createElement("button");
-            btn.className = "category-btn px-4 py-2 rounded-full font-label-md text-label-md bg-surface-container-low text-on-surface border border-surface-container hover:bg-surface-container-high transition-colors whitespace-nowrap";
+            btn.className = `category-btn ${isActive ? 'active-pill bg-parchment text-obsidian-950' : 'bg-obsidian-900 text-slate-300 border border-obsidian-800 hover:border-obsidian-700'} px-3.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all`;
             btn.setAttribute("data-cat", sub.name);
             btn.innerText = sub.name;
             categoryPillsContainer.appendChild(btn);
@@ -115,13 +133,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const categoryPills = document.querySelectorAll(".category-btn");
         categoryPills.forEach(pill => {
             pill.addEventListener("click", () => {
-                categoryPills.forEach(p => {
-                    p.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm', 'border-transparent');
-                    p.classList.add('bg-surface-container-low', 'text-on-surface', 'border', 'border-surface-container');
-                });
-                pill.classList.remove('bg-surface-container-low', 'text-on-surface', 'border', 'border-surface-container');
-                pill.classList.add('bg-primary', 'text-on-primary', 'shadow-sm', 'border-transparent');
                 currentCategory = pill.getAttribute("data-cat");
+                categoryPills.forEach(p => {
+                    p.classList.remove('bg-parchment', 'text-obsidian-950', 'active-pill', 'font-semibold');
+                    p.classList.add('bg-obsidian-900', 'text-slate-300', 'border', 'border-obsidian-800');
+                });
+                pill.classList.remove('bg-obsidian-900', 'text-slate-300', 'border', 'border-obsidian-800');
+                pill.classList.add('bg-parchment', 'text-obsidian-950', 'active-pill', 'font-semibold');
                 renderGrid();
             });
         });
@@ -130,11 +148,11 @@ document.addEventListener("DOMContentLoaded", () => {
         matkulList.innerHTML = "";
         allSubjects.forEach(sub => {
             const li = document.createElement("li");
-            li.className = "flex justify-between items-center p-2 bg-surface-container-low rounded-lg";
+            li.className = "flex justify-between items-center p-2.5 bg-obsidian-950 border border-obsidian-800/80 rounded-xl";
             li.innerHTML = `
-                <span class="font-body-sm text-on-surface">${sub.name}</span>
-                <button class="text-error hover:bg-error-container p-1 rounded transition-colors" onclick="deleteMatkul('${sub.id}')">
-                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                <span class="text-xs text-slate-200 font-medium">${sub.name}</span>
+                <button class="text-rose-400 hover:text-rose-300 hover:bg-rose-950/40 p-1 rounded-lg transition-colors" onclick="deleteMatkul('${sub.id}')" title="Hapus">
+                    <span class="material-symbols-outlined text-[16px]">delete</span>
                 </button>
             `;
             matkulList.appendChild(li);
@@ -168,6 +186,16 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
+    window.deleteSlide = async (id) => {
+        if (!confirm("Hapus presentasi ini dari katalog?")) return;
+        try {
+            await window.deleteDoc(window.doc(window.firebaseDb, "presentations", id));
+            showToast("Slide berhasil dihapus");
+            loadSlides();
+        } catch (error) {
+            alert("Gagal menghapus slide: " + error.message);
+        }
+    };
 
     // --- Upload ---
     uploadForm.addEventListener("submit", async (e) => {
@@ -184,7 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         formSubmit.disabled = true;
-        formSubmit.innerHTML = "Menyimpan...";
+        formSubmit.innerHTML = "Menyimpan ke arsip...";
 
         try {
             await window.addDoc(window.collection(window.firebaseDb, "presentations"), {
@@ -192,12 +220,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 judul,
                 pertemuan,
                 url,
-                fileName: "Dari Link",
+                fileName: "Materi Terbit",
                 type: type,
                 timestamp: new Date()
             });
 
-            showToast("Berhasil menyimpan link presentasi!");
+            showToast("Berhasil menerbitkan materi!");
             uploadForm.reset();
             toggleUploadDrawer();
             loadSlides();
@@ -205,7 +233,7 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Gagal upload: " + error.message);
         } finally {
             formSubmit.disabled = false;
-            formSubmit.innerHTML = `<span class="material-symbols-outlined text-[18px]">publish</span><span>Upload & Publikasikan</span>`;
+            formSubmit.innerHTML = `<span class="material-symbols-outlined text-[18px]">publish</span><span>Publikasikan Slide</span>`;
         }
     });
 
@@ -218,10 +246,11 @@ document.addEventListener("DOMContentLoaded", () => {
             snapshot.forEach(doc => {
                 allSlides.push({ id: doc.id, ...doc.data() });
             });
-            statSlide.innerText = `${allSlides.length} Slide Tersedia`;
+            statSlide.innerText = `${allSlides.length} Dokumen`;
             renderGrid();
         } catch (error) {
             console.error("Gagal load data", error);
+            statSlide.innerText = "0 Dokumen";
         }
     }
 
@@ -234,8 +263,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         if (searchQuery) {
             filtered = filtered.filter(s => 
-                s.judul.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                s.matkul.toLowerCase().includes(searchQuery.toLowerCase())
+                (s.judul && s.judul.toLowerCase().includes(searchQuery.toLowerCase())) || 
+                (s.matkul && s.matkul.toLowerCase().includes(searchQuery.toLowerCase()))
             );
         }
 
@@ -249,39 +278,54 @@ document.addEventListener("DOMContentLoaded", () => {
             noResultsState.classList.remove("flex");
             
             filtered.forEach(item => {
-                const badgeColor = item.type === "PDF" ? "bg-error text-on-error" : "bg-primary text-on-primary";
+                const isPdf = item.type === "PDF";
+                const badgeColor = isPdf 
+                    ? "bg-rose-950/60 text-rose-300 border-rose-800/40" 
+                    : "bg-amber-950/60 text-amber-300 border-amber-800/40";
                 
+                const typeIcon = isPdf ? "picture_as_pdf" : (item.type === "PPTX" ? "co_present" : "link");
                 const dateObj = item.timestamp?.toDate ? item.timestamp.toDate() : new Date();
-                const dateStr = dateObj.toLocaleDateString("id-ID");
+                const dateStr = dateObj.toLocaleDateString("id-ID", { day: 'numeric', month: 'short', year: 'numeric' });
 
                 const card = document.createElement("article");
-                card.className = "presentation-card group flex flex-col justify-between bg-surface-container-lowest rounded-xl shadow-lg border border-surface-container hover:border-surface-container-high transition-all duration-300 hover:-translate-y-1 overflow-hidden";
+                card.className = "group flex flex-col justify-between bg-obsidian-900 border border-obsidian-800 hover:border-obsidian-700/80 rounded-2xl p-5 transition-all duration-200 hover:-translate-y-0.5 shadow-sm";
+                
                 card.innerHTML = `
-                    <div>
-                        <div class="relative w-full aspect-video bg-surface-container-low overflow-hidden flex items-center justify-center">
-                            <span class="material-symbols-outlined text-[64px] text-surface-variant">description</span>
-                            <div class="absolute top-3 left-3 flex items-center gap-1.5">
-                                <span class="px-2.5 py-1 rounded-md ${badgeColor} font-label-sm text-label-sm uppercase font-bold tracking-wider shadow">${item.type || 'FILE'}</span>
-                                <span class="px-2.5 py-1 rounded-md bg-surface-container-lowest/90 backdrop-blur-md text-on-surface font-label-sm text-label-sm font-semibold shadow">Pertemuan ${item.pertemuan}</span>
-                            </div>
+                    <div class="flex flex-col gap-3">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 text-[10px] font-mono font-medium rounded border ${badgeColor}">
+                                <span class="material-symbols-outlined text-[13px]">${typeIcon}</span>
+                                ${item.type || 'DOKUMEN'}
+                            </span>
+                            <span class="text-[11px] font-mono text-slate-400 bg-obsidian-950 px-2 py-0.5 rounded border border-obsidian-800">
+                                Pertemuan ${item.pertemuan}
+                            </span>
                         </div>
-                        <div class="p-space-md flex flex-col gap-2">
-                            <div class="flex items-center justify-between">
-                                <span class="font-label-sm text-label-sm font-semibold uppercase tracking-wider text-primary">${item.matkul}</span>
-                            </div>
-                            <h3 class="font-headline-sm text-headline-sm text-primary group-hover:text-primary-container transition-colors line-clamp-2">${item.judul}</h3>
-                            <div class="flex items-center gap-2 pt-2 text-secondary">
-                                <div class="flex items-center gap-2 font-body-sm text-body-sm">
-                                    <span>Diunggah pada ${dateStr}</span>
-                                </div>
-                            </div>
+
+                        <div class="flex flex-col gap-1 mt-1">
+                            <span class="text-[11px] font-mono uppercase tracking-wider text-accent font-medium">${item.matkul}</span>
+                            <h3 class="text-sm sm:text-base font-semibold text-parchment leading-snug group-hover:text-white transition-colors line-clamp-2">
+                                ${item.judul}
+                            </h3>
                         </div>
                     </div>
-                    <div class="px-space-md pb-space-md pt-2 flex items-center justify-end border-t border-surface-container-high/60">
-                        <a href="${item.url}" target="_blank" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-primary text-on-primary font-label-md text-label-md hover:bg-primary-container transition-colors shadow-sm">
-                            <span class="material-symbols-outlined text-[16px]">file_download</span>
-                            <span>Download / Lihat</span>
-                        </a>
+
+                    <div class="pt-4 mt-4 border-t border-obsidian-800/70 flex items-center justify-between gap-2">
+                        <span class="text-[11px] text-slate-400 font-mono">
+                            ${dateStr}
+                        </span>
+
+                        <div class="flex items-center gap-1.5">
+                            ${currentUser ? `
+                                <button onclick="deleteSlide('${item.id}')" class="p-1.5 text-slate-400 hover:text-rose-300 hover:bg-rose-950/50 rounded-lg transition-colors" title="Hapus Slide">
+                                    <span class="material-symbols-outlined text-[16px]">delete</span>
+                                </button>
+                            ` : ''}
+                            <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-parchment hover:bg-white text-obsidian-950 text-xs font-bold rounded-lg shadow-sm transition-all">
+                                <span>Akses Slide</span>
+                                <span class="material-symbols-outlined text-[14px]">arrow_outward</span>
+                            </a>
+                        </div>
                     </div>
                 `;
                 presentationsGrid.appendChild(card);
@@ -291,7 +335,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     searchInput.addEventListener("input", (e) => {
         searchQuery = e.target.value;
+        if (headerSearchInput) headerSearchInput.value = searchQuery;
         renderGrid();
+    });
+
+    if (headerSearchInput) {
+        headerSearchInput.addEventListener("input", (e) => {
+            searchQuery = e.target.value;
+            searchInput.value = searchQuery;
+            renderGrid();
+        });
+    }
+
+    // Hotkey Cmd+K or Ctrl+K focus
+    window.addEventListener("keydown", (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+            e.preventDefault();
+            searchInput.focus();
+        }
     });
 
     // Initial load
